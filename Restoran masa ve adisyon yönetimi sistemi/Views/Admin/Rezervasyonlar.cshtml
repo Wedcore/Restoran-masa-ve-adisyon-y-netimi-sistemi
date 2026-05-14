@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Rezervasyon>
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <h2 class="text-white mb-4">🛠️ Gelen Rezervasyon Talepleri</h2>
+
+    <div class="card bg-dark text-white shadow" style="border-radius: 15px;">
+        <div class="card-body">
+            <table class="table table-dark table-hover align-middle text-center">
+                <thead>
+                    <tr class="text-warning">
+                        <th>Talep ID</th>
+                        <th>Müşteri Adı</th>
+                        <th>Masa No</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rez in Model)
+                    {
+                        <tr>
+                            <td>#@rez.Id</td>
+                            <td>@rez.MusteriAdi</td>
+                            <td class="fw-bold fs-5">Masa @rez.MasaId</td>
+                            <td>@rez.Tarih.ToString("dd MMMM yyyy - HH:mm")</td>
+                            <td>
+                                @* 🛠️ Durum Kontrolü *@
+                                @if (rez.DurumId == 1)
+                                {
+                                    <span class="badge bg-warning text-dark">⏳ @(rez.Durum?.Ad ?? "Beklemede")</span>
+                                }
+                                else if (rez.DurumId == 2)
+                                {
+                                    <span class="badge bg-success">✅ @(rez.Durum?.Ad ?? "Onaylandı")</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">❌ @(rez.Durum?.Ad ?? "Reddedildi / İptal")</span>
+                                }
+                            </td>
+                            <td>
+                                @* 🛠️ İŞLEM BUTONLARI BURADA GÜNCELLENDİ *@
+                                @if (rez.DurumId == 1)
+                                {
+                                    <a href="/Admin/Onayla/@rez.Id" class="btn btn-sm btn-success fw-bold mx-1">Onayla</a>
+                                    <a href="/Admin/Reddet/@rez.Id" class="btn btn-sm btn-danger fw-bold mx-1">Reddet</a>
+                                }
+                                else if (rez.DurumId == 2)
+                                {
+                                    <a href="/Admin/Iptal/@rez.Id" class="btn btn-sm btn-warning fw-bold mx-1" onclick="return confirm('Bu rezervasyonu iptal edip masayı boşa çıkarmak istediğinize emin misiniz?');">🚫 İptal Et</a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">İşlem Tamamlandı</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: #121212;
+    }
+</style>

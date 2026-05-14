@@ -1,0 +1,45 @@
+﻿@model Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Rezervasyon
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark border-warning border-opacity-25 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h4 class="mb-0 fw-bold text-center">📅 Masa Rezervasyonu</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="RezervasyonKaydet" method="post">
+                        <div class="mb-3">
+                            <label class="form-label text-warning small fw-bold">ADINIZ SOYADINIZ</label>
+                            <input type="text" name="MusteriAd" class="form-control bg-black border-secondary text-white" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-warning small fw-bold">TELEFON NUMARASI</label>
+                            <input type="text" name="Telefon" class="form-control bg-black border-secondary text-white" required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-warning small fw-bold">MASA SEÇİN</label>
+                                <select name="MasaId" class="form-select bg-black border-secondary text-white">
+                                    @foreach (var masa in ViewBag.Masalar)
+                                    {
+                                        <option value="@masa.Id">@masa.MasaNo</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-warning small fw-bold">KİŞİ SAYISI</label>
+                                <input type="number" name="KisiSayisi" class="form-control bg-black border-secondary text-white" value="1" min="1" required />
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-warning small fw-bold">TARİH VE SAAT</label>
+                            <input type="datetime-local" name="RezervasyonZamani" class="form-control bg-black border-secondary text-white" required />
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 rounded-pill fw-bold py-2 shadow">REZERVASYONU ONAYLA</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

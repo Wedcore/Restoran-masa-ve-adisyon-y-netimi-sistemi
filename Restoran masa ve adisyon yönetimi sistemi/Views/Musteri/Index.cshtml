@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Müşteri Paneli";
+}
+
+<style>
+    body {
+        background-color: #121212;
+        color: white;
+    }
+
+    /* Butonları küçülttüğümüz yeni stil */
+    .dev-buton {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 280px; /* Yükseklik 400'den 280'e düştü */
+        border-radius: 20px;
+        text-decoration: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .dev-buton:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            color: white !important;
+        }
+
+    .buton-emoji {
+        font-size: 4rem; /* Emoji boyutu küçüldü */
+    }
+
+    .buton-baslik {
+        font-size: 2rem; /* Yazı boyutu küçüldü */
+        font-weight: bold;
+        margin-top: 15px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="mb-5">
+        <h2 class="fw-bold">👋 Hoş Geldin, @User.Identity.Name!</h2>
+    </div>
+
+    <div class="row justify-content-center mt-5">
+        
+        <div class="col-md-4 mb-4">
+            <a href="/Rezervasyon/Index" class="dev-buton bg-primary text-white shadow-lg">
+                <span class="buton-emoji">🍷</span>
+                <div class="buton-baslik">Masa Ayırt</div>
+                <p class="opacity-75 mt-2">Hemen Rezervasyon Yap</p>
+            </a>
+        </div>
+
+        @* 🎯 DÜZELTME: Menüyü İncele butonu hocanın isteği üzerine komple silindi! *@
+
+    </div>
+</div>

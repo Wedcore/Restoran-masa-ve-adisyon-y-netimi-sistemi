@@ -1,0 +1,122 @@
+﻿@{
+    Layout = null; // Navbar görünmesin, tam ekran şık dursun
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Müşteri Kayıt - RestoranPro</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f2027, #2c5364, #203a43);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+
+        .register-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h2 { color: #fff; font-weight: 700; margin-bottom: 10px; }
+        p { color: #0dcaf0; font-size: 0.9rem; margin-bottom: 30px; }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            color: #fff;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #0dcaf0;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        .btn-register {
+            background: #0dcaf0;
+            color: #000;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            width: 100%;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-register:hover {
+            background: #0baccc;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(13, 202, 240, 0.4);
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 25px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .back-link:hover { color: #fff; }
+
+        .error-msg {
+            background: rgba(220, 53, 69, 0.2);
+            color: #ff8d97;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-card">
+        <h2>Aramıza Katıl</h2>
+        <p>Hemen üye ol, masanı rezerve et!</p>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="error-msg">
+                ⚠️ @ViewBag.Error
+            </div>
+        }
+
+        <form asp-action="Register" asp-controller="Account" method="post">
+            <div class="form-group">
+                <input type="text" name="KullaniciAdi" class="form-control" placeholder="Kullanıcı Adı" required />
+            </div>
+            <div class="form-group">
+                <input type="password" name="Sifre" class="form-control" placeholder="Şifre" required />
+            </div>
+            <button type="submit" class="btn-register">Hesabımı Oluştur ➔</button>
+        </form>
+
+        <a href="/Account/Login" class="back-link">Zaten üye misin? Giriş Yap</a>
+    </div>
+
+</body>
+</html>

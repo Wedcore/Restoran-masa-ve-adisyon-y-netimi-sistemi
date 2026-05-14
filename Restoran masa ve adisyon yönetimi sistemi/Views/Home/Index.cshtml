@@ -1,0 +1,183 @@
+﻿@using System.Security.Claims
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+@if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <div class="container-fluid mt-3 px-4">
+        
+        <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-4">
+            <div>
+                <h1 class="h2 text-white fw-bold">Yönetici Paneli</h1>
+                <p class="text-muted mb-0">Hoş geldin, @(User.Identity.Name ?? "Yönetici"). Sistem verileri anlık analiz ediliyor.</p>
+            </div>
+            <div class="text-white bg-dark p-2 px-3 rounded shadow-sm border border-secondary small">
+                @DateTime.Now.ToString("dd MMMM yyyy, dddd")
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-dark text-white border-warning mb-3 shadow-sm h-100" style="border-radius: 12px; border-width: 2px;">
+                    <div class="card-body">
+                        <h6 class="card-title text-warning text-uppercase fw-bold small">Bekleyen Rezervasyonlar</h6>
+                        <div class="d-flex justify-content-between align-items-end mt-3">
+                            <p class="card-text h1 fw-bold mb-0 text-warning">@ViewBag.RezervasyonSayisi</p>
+                            <a href="/Admin/Rezervasyonlar" class="btn btn-sm btn-warning rounded-pill px-3 fw-bold">Onaylara Git</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-white border-info mb-3 shadow-sm h-100" style="border-radius: 12px; border-width: 2px;">
+                    <div class="card-body">
+                        <h6 class="card-title text-info text-uppercase fw-bold small">Masa Yönetimi</h6>
+                        <div class="d-flex justify-content-between align-items-end mt-3">
+                            <p class="card-text h1 fw-bold mb-0 text-info">@ViewBag.DoluMasa</p>
+                            @* DÜZELTME BURADA: Artık doğrudan sipariş girilebilen Masa Yerleşim Planına gidiyor *@
+                            <a href="/Admin/MasaYonetimi" class="btn btn-sm btn-info text-white rounded-pill px-3 fw-bold">Masaları Yönet</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-dark text-white border-success mb-3 shadow-sm h-100" style="border-radius: 12px; border-width: 2px;">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <h6 class="card-title text-success text-uppercase fw-bold small">Aylık Toplam Ciro</h6>
+                        <p class="card-text h1 fw-bold mb-0 text-success mt-2">@ViewBag.AylikCiro ₺</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 mb-4">
+                <div class="card bg-dark border-secondary shadow-sm h-100" style="border-radius: 12px;">
+                    <div class="card-header bg-dark text-white border-secondary py-3 fw-bold">
+                        📊 Gelir Trend Analizi (Son 7 Gün)
+                    </div>
+                    <div class="card-body p-4">
+                        <div style="position: relative; height:350px; width:100%">
+                            <canvas id="ciroChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card bg-dark border-secondary shadow-sm h-100" style="border-radius: 12px;">
+                    <div class="card-header bg-dark text-white border-secondary py-3 fw-bold text-center">
+                        🏆 Masa Kazanç Sıralaması
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead>
+                                <tr class="text-muted small">
+                                    <th class="ps-4">Masa</th>
+                                    <th class="text-end pe-4">Toplam</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.MasaCiroListesi != null)
+                                {
+                                    foreach (var item in ViewBag.MasaCiroListesi)
+                                    {
+                                        <tr>
+                                            <td class="ps-4">Masa @item.MasaNo</td>
+                                            <td class="text-end pe-4 fw-bold text-info">@item.Toplam.ToString("N2") ₺</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="2" class="text-center py-4 text-muted small">Henüz veri bulunamadı.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('ciroChart').getContext('2d');
+            
+            // Controller'dan gelen dinamik veriler
+            const labels = @Html.Raw(Json.Serialize(ViewBag.GrafikGunler));
+            const data = @Html.Raw(Json.Serialize(ViewBag.GrafikRakamlar));
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Günlük Ciro (₺)',
+                        data: data,
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#ffc107'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#333' },
+                            ticks: { color: '#aaa' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#aaa' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
+else
+{
+    @* MÜŞTERİ PANELİ (ADMİN DEĞİLSE) *@
+    <div class="container text-center text-white" style="margin-top: 100px;">
+        <h1 class="display-4 fw-bold text-warning mb-3">RestoranPro</h1>
+        <p class="lead text-muted mb-5">Lezzet yolculuğunuz burada başlıyor.</p>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-5 mb-4">
+                <a href="/Rezervasyon/Index" class="card bg-dark border-warning p-4 text-decoration-none h-100 shadow-lg" style="border-radius: 15px;">
+                    <div class="card-body">
+                        <h2 class="text-warning mb-3">🍷 Masa Ayırt</h2>
+                        <p class="text-muted small">Hemen yerinizi ayırtın.</p>
+                    </div>
+                </a>
+            </div>
+            @* 🎯 DÜZELTME: Kaçak Menü butonu buradan da ebediyen silindi! *@
+        </div>
+    </div>
+}
+
+<style>
+    body { background-color: #0f0f0f; }
+    .table td { border-color: #333; padding: 15px; }
+    .card { transition: transform 0.2s; }
+    .card:hover { transform: translateY(-3px); }
+</style>

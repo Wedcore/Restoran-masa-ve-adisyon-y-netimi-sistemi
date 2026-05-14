@@ -1,0 +1,37 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>Yönetici Girişi - RestoranPro</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body { background: #0f2027; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', sans-serif; }
+        .admin-card { background: #1a1a1a; padding: 40px; border-radius: 15px; width: 100%; max-width: 400px; border-top: 5px solid #ffc107; box-shadow: 0 10px 30px rgba(0,0,0,0.8); text-align: center; color: white; }
+        .form-control { background: #222; border: 1px solid #444; color: white; margin-bottom: 20px; padding: 12px; }
+        .form-control:focus { background: #333; border-color: #ffc107; color: white; box-shadow: none; }
+        .btn-admin { background: #ffc107; color: #000; font-weight: bold; width: 100%; padding: 12px; border: none; border-radius: 8px; transition: 0.3s; }
+        .btn-admin:hover { background: #e0a800; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="admin-card">
+        <h2 class="mb-4">🛡️ Sistem Yönetimi</h2>
+        
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger py-2 small">@ViewBag.Error</div>
+        }
+
+        <form asp-action="AdminLogin" asp-controller="Account" method="post">
+            <input type="text" name="username" class="form-control" placeholder="Yönetici Kullanıcı Adı" required />
+            <input type="password" name="password" class="form-control" placeholder="Şifre" required />
+            <button type="submit" class="btn-admin">YETKİLİ GİRİŞİ</button>
+        </form>
+        <p class="text-muted small mt-4">Bu sayfa sadece yetkili personel içindir.</p>
+    </div>
+</body>
+</html>

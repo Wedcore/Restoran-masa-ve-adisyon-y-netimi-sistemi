@@ -1,0 +1,134 @@
+﻿@model IEnumerable<Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Adisyon>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Masa Detayı";
+    
+    // Masanın genel toplamını hesaplıyoruz
+    decimal toplamTutar = Model?.Sum(x => x.Fiyat * x.Adet) ?? 0;
+}
+
+<div class="container-fluid mt-4 px-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-4">
+        <h1 class="h2 text-white fw-bold">🍽️ @ViewBag.MasaNo</h1>
+        <a href="/Admin/MasaYonetimi" class="btn btn-outline-light btn-sm rounded-pill px-3">Geri Dön</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <div class="card bg-dark border-secondary shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-header bg-dark text-white border-secondary py-3 fw-bold">
+                    🧾 Masadaki Siparişler
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead>
+                                <tr class="text-white opacity-75 small">
+                                    <th class="ps-4">Ürün Adı</th>
+                                    <th>Adet</th>
+                                    <th class="text-end pe-4">Tutar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="ps-4 text-white">@item.UrunAdi</td>
+                                            <td class="text-white">@item.Adet</td>
+                                            <td class="text-end pe-4 text-success fw-bold">
+                                                @((item.Fiyat * item.Adet).ToString("N2")) ₺
+                                            </td>
+                                        </tr>
+                                    }
+                                    <tr class="bg-secondary bg-opacity-25">
+                                        <td colspan="2" class="ps-4 fw-bold text-end text-white">GENEL TOPLAM:</td>
+                                        <td class="text-end pe-4 fw-bold text-warning h5 mb-0">@toplamTutar.ToString("N2") ₺</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center py-5 text-white opacity-75">
+                                            Masada henüz sipariş yok.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            
+            <div class="card bg-dark border-secondary shadow-sm mb-4" style="border-radius: 12px;">
+                <div class="card-header bg-dark text-white border-secondary py-3 fw-bold text-success">
+                    ➕ Yeni Sipariş Ekle
+                </div>
+                <div class="card-body p-4">
+                    <form action="/Admin/SiparisEkle" method="post">
+                        <input type="hidden" name="masaId" value="@ViewBag.MasaId" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-white small">Ürün Adı</label>
+                            <input type="text" name="urunAdi" class="form-control bg-dark text-white border-secondary" required placeholder="Örn: İskender" />
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label text-white small">Adet</label>
+                                <input type="number" name="adet" class="form-control bg-dark text-white border-secondary" required min="1" value="1" />
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label text-white small">Birim Fiyat (₺)</label>
+                                <input type="number" name="fiyat" step="0.01" class="form-control bg-dark text-white border-secondary" required placeholder="0.00" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 fw-bold rounded-pill">Siparişi Ekle</button>
+                    </form>
+                </div>
+            </div>
+
+            @if (toplamTutar > 0)
+            {
+                <div class="card bg-dark border-secondary shadow-sm" style="border-radius: 12px;">
+                    <div class="card-header bg-dark text-white border-secondary py-3 fw-bold text-danger">
+                        💳 Hesabı Kapat
+                    </div>
+                    <div class="card-body p-4">
+                        <form action="/Admin/HesapKapat" method="post">
+                            <input type="hidden" name="masaId" value="@ViewBag.MasaId" />
+                            
+                            <div class="mb-3">
+                                <label class="form-label text-white small">Ödeme Yöntemi</label>
+                                <select name="odemeYontemi" class="form-select bg-dark text-white border-secondary" required>
+                                    <option value="Nakit">Nakit</option>
+                                    <option value="Kredi Kartı">Kredi Kartı</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100 fw-bold rounded-pill">Tahsil Et & Masayı Kapat</button>
+                        </form>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<style>
+    body { background-color: #0f0f0f; }
+    .table td, .table th { border-color: #333; padding: 15px; vertical-align: middle; }
+    
+    /* Input alanlarına odaklanınca (focus) oluşacak mavi kenarlığı restoran rengine çekiyoruz */
+    .form-control:focus, .form-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+    }
+
+    /* Kutu içindeki silik örnek yazıları (placeholder) modlara göre ayarlıyoruz */
+    ::placeholder { color: rgba(255, 255, 255, 0.5) !important; }
+    body.light-mode ::placeholder { color: rgba(0, 0, 0, 0.5) !important; }
+</style>

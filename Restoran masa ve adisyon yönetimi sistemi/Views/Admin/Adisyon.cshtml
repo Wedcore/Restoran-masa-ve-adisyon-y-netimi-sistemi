@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Adisyon>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Aktif Adisyonlar";
+}
+
+<div class="container-fluid mt-4 px-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-3 mb-4">
+        <h1 class="h2 text-white fw-bold">🧾 Aktif Adisyon Listesi</h1>
+        <a href="/Home/Index" class="btn btn-outline-light btn-sm rounded-pill">Geri Dön</a>
+    </div>
+
+    <div class="card bg-dark border-secondary shadow-sm" style="border-radius: 12px;">
+        <div class="card-body p-0">
+            <table class="table table-dark table-hover mb-0">
+                <thead>
+                    <tr class="text-muted small">
+                        <th class="ps-4">Masa No</th>
+                        <th>Ürün Adı</th>
+                        <th>Adet</th>
+                        <th class="text-end pe-4">Fiyat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">Masa @item.MasaId</td>
+                                <td>@item.UrunAdi</td>
+                                <td>@item.Adet</td>
+                                <td class="text-end pe-4 text-success fw-bold">@((item.Fiyat * item.Adet).ToString("N2")) ₺</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                Şu an aktif bir adisyon bulunmuyor.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    body { background-color: #0f0f0f; }
+    .table td { border-color: #333; padding: 15px; }
+</style>

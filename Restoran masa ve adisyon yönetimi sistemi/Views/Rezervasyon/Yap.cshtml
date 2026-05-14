@@ -1,0 +1,41 @@
+﻿@* 1. DÜZELTME: Artık sayfamız Masa değil, Rezervasyon modelini bekliyor! *@
+@model Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Rezervasyon
+
+<div class="container mt-5">
+    <div class="card bg-dark text-white p-5 mx-auto shadow-lg" style="max-width: 500px; border-radius: 15px;">
+        
+        @* 2. DÜZELTME: Çift "Masa" yazmaması ve güvenli olması için ViewBag kullandık *@
+        <h2 class="text-center fw-bold mb-4 text-warning">@ViewBag.MasaNo Rezervasyonu</h2>
+        
+        <form asp-action="Yap" method="post">
+            
+            @* 3. DÜZELTME: MasaId'yi arka planda SQL'e tam eşleşecek şekilde gizlice gönderiyoruz *@
+            <input type="hidden" asp-for="MasaId" value="@ViewBag.MasaId" />
+            
+            @* 🎯 YENİ EKLENEN KISIM: Müşteri artık buraya istediği ismi veya notu yazabilir *@
+            <div class="mb-3">
+                <label class="form-label text-light">Adınız Soyadınız veya Notunuz</label>
+                <input type="text" asp-for="MusteriAdi" class="form-control" placeholder="Masaya yazılacak ismi girin..." required />
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label text-light">Rezervasyon Tarihi ve Saati</label>
+                @* ⏳ DÜZELTME: asp-for silindi. Saniye yok, geçmiş tarih yok. Tam saatine kilitli! *@
+                <input type="datetime-local" id="Tarih" name="Tarih" class="form-control"
+                       value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                       min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                       required />
+            </div>
+            
+            <button type="submit" class="btn btn-warning w-100 fw-bold p-2" style="border-radius: 10px;">
+                Ayırtmayı Tamamla
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    body {
+        background: #121212;
+    }
+</style>

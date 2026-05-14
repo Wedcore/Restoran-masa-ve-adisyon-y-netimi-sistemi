@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Masa>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Masa Yönetimi";
+}
+
+<div class="container-fluid mt-4 px-4">
+    <div class="row align-items-center border-bottom border-secondary pb-3 mb-4">
+        <div class="col-md-6">
+            <h1 class="h2 text-white fw-bold mb-0">🪑 Masa Yerleşim Planı</h1>
+        </div>
+        <div class="col-md-6 text-md-end mt-3 mt-md-0">
+            <form action="/Admin/MasaEkle" method="post" class="d-inline-flex">
+                <input type="text" name="masaNo" class="form-control form-control-sm bg-dark text-white border-secondary me-2" placeholder="Masa Adı/No" required style="width: 150px;">
+                <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 fw-bold">+ Yeni Masa</button>
+            </form>
+            <a href="/Home/Index" class="btn btn-outline-light btn-sm rounded-pill px-3 ms-2">Geri Dön</a>
+        </div>
+    </div>
+
+    <div class="mb-4 small">
+        <span class="badge bg-success me-2">● Müsait</span>
+        <span class="badge bg-danger">● Dolu</span>
+        <span class="text-muted ms-3">Sipariş girmek için masaya tıklayın.</span>
+    </div>
+
+    <div class="row">
+        @foreach (var masa in Model)
+        {
+            <div class="col-6 col-md-4 col-lg-2 mb-4">
+                <div class="card h-100 shadow-sm border-2 @(masa.DoluMu ? "border-danger bg-dark" : "border-success bg-dark") position-relative" 
+                     style="border-radius: 15px; transition: transform 0.2s;">
+                    
+                    <form action="/Admin/MasaSil" method="post" class="position-absolute" style="top: 10px; right: 10px; z-index: 10;">
+                        <input type="hidden" name="id" value="@masa.Id" />
+                        <button type="submit" class="btn btn-link text-muted p-0 border-0" onclick="return confirm('Masa @masa.MasaNo silinecek, emin misin?')">
+                            <i class="text-danger small">✖ Sil</i>
+                        </button>
+                    </form>
+
+                    <a href="/Admin/MasaDetay/@masa.Id" class="text-decoration-none card-body text-center py-4">
+                        <h3 class="display-6 fw-bold @(masa.DoluMu ? "text-danger" : "text-success")">
+                            @masa.MasaNo
+                        </h3>
+                        <p class="text-muted mb-0 small">MASA</p>
+                        @if (masa.DoluMu)
+                        {
+                            <span class="badge bg-danger mt-2">Dolu</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success mt-2">Müsait</span>
+                        }
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .card:hover { transform: scale(1.05); }
+    body { background-color: #0f0f0f; }
+    .form-control:focus { border-color: #198754; box-shadow: none; }
+</style>

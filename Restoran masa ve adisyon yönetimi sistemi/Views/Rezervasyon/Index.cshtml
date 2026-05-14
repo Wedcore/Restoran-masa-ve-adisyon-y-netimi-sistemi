@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Masa>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Masa Seçimi";
+}
+
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h2 class="text-white fw-bold">🪑 Masa Seçimi</h2>
+        <p class="text-muted">Rezervasyon yapmak istediğiniz masayı seçin.</p>
+    </div>
+
+    <div class="row">
+        @foreach (var masa in Model)
+        {
+            <div class="col-md-3 mb-4">
+                @* Kartın rengini doluluk durumuna göre ayarlıyoruz *@
+                <div class="card h-100 shadow @(masa.DoluMu ? "bg-danger" : "bg-success") text-white text-center p-4"
+                     style="border-radius: 15px; border: none; transition: transform 0.2s;">
+                    
+                    @* DÜZELTME: "Masa @masa.MasaNo" yerine direkt @masa.MasaNo yazarak çift kelimeyi önledik *@
+                    <h3 class="fw-bold">@masa.MasaNo</h3>
+                    
+                    <p class="mb-3">
+                        <span class="badge bg-dark bg-opacity-25">
+                            @(masa.DoluMu ? "DOLU" : "BOŞ")
+                        </span>
+                    </p>
+
+                    @if (!masa.DoluMu)
+                    {
+                        <a href="/Rezervasyon/Yap/@masa.Id" class="btn btn-outline-light rounded-pill px-4 fw-bold shadow-sm">
+                            Masayı Seç
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-light btn-sm disabled opacity-50 rounded-pill">Seçilemez</button>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    body {
+        background: #121212;
+    }
+    /* Kartların üzerine gelince hafif büyüme efekti */
+    .card:hover {
+        transform: scale(1.03);
+    }
+</style>

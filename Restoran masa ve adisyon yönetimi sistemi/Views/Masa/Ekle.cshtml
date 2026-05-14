@@ -1,0 +1,21 @@
+﻿@model Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Masa
+
+<div class="container mt-4">
+    <h2>Yeni Masa Ekle</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Ekle" method="post">
+                
+                <div class="form-group mb-3">
+                    <label class="control-label">Masa Numarası veya Adı (Örn: Masa 1, Bahçe 3)</label>
+                    <input asp-for="MasaNo" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+                <a href="/Masa/Index" class="btn btn-secondary">İptal ve Geri Dön</a>
+            </form>
+        </div>
+    </div>
+</div>

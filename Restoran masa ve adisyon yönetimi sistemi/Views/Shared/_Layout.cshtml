@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RestoranPro</title>
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    <style>
+        /* Varsayılan Tema: Karanlık */
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+        }
+
+        /* Aydınlık Mod Sınıfı */
+        body.light-mode {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+
+        /* Navbar Ayarları */
+        .navbar {
+            background-color: #1a1a1a !important;
+            border-bottom: 1px solid #333;
+            transition: background-color 0.3s ease;
+        }
+
+        body.light-mode .navbar {
+            background-color: #ffffff !important;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        /* Navbar Yazı Renkleri */
+        body.light-mode .nav-link { color: #212529 !important; }
+        body.light-mode .navbar-brand { color: #d39e00 !important; }
+        
+        /* Sağ Üst Tema Tuşu Stili */
+        #theme-toggle {
+            cursor: pointer;
+            border: 1px solid #444;
+            padding: 4px 12px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        body.light-mode #theme-toggle {
+            border-color: #ccc;
+            color: #212529;
+        }
+
+        .navbar-brand:hover {
+            opacity: 0.8;
+        }
+
+        /* ----- AYDINLIK MOD: KART VE TABLO DÜZELTMELERİ ----- */
+        body.light-mode .bg-dark { background-color: #ffffff !important; }
+        body.light-mode .text-white:not(.btn) { color: #212529 !important; }
+        body.light-mode .border-secondary { border-color: #dee2e6 !important; }
+        
+        body.light-mode .table-dark th,
+        body.light-mode .table-dark td {
+            background-color: #ffffff !important;
+            color: #212529 !important;
+            border-color: #dee2e6 !important;
+        }
+        body.light-mode .table-hover tbody tr:hover td { background-color: #f1f3f5 !important; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark mb-3 shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="/Home/Index">🍽️ RestoranPro</a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @* 🎯 DÜZELTME: Menü butonu hocanın isteği üzerine jilet gibi kaldırıldı! Sadece Rezervasyonlarım kaldı. *@
+                        
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-info fw-bold" href="/Musteri/Rezervasyonlarim">📋 Rezervasyonlarım</a>
+                            </li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav align-items-center">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item me-3">
+                                <span class="nav-link p-0 text-muted small">👤 @User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-danger fw-bold p-0" href="/Account/Logout" style="font-size: 0.9rem;">Çıkış</a>
+                            </li>
+                        }
+                        
+                        <li class="nav-item">
+                            <button id="theme-toggle" class="btn btn-sm rounded-pill btn-outline-secondary text-white">
+                                🌓 Mod Değiştir
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // --- TEMA YÖNETİMİ ---
+        const btn = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+        }
+
+        btn.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            if (body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // --- BİLDİRİM (POPUP) SİSTEMİ ---
+        document.addEventListener("DOMContentLoaded", function() {
+            var mesaj = '@Html.Raw(TempData["Mesaj"])';
+            var icon = '@Html.Raw(TempData["Icon"])';
+
+            if (mesaj && mesaj !== "") {
+                // 🛠️ DÜZELTME: İkona göre başlığı (Title) dinamik yapıyoruz!
+                var baslik = 'İşlem Başarılı!';
+                if (icon === 'error') {
+                    baslik = 'Hata!';
+                } else if (icon === 'warning') {
+                    baslik = 'Uyarı!';
+                }
+
+                Swal.fire({
+                    title: baslik, 
+                    text: mesaj,
+                    icon: icon || 'success',
+                    confirmButtonText: 'Tamam',
+                    background: body.classList.contains('light-mode') ? '#fff' : '#1a1a1a',
+                    color: body.classList.contains('light-mode') ? '#000' : '#fff'
+                });
+            }
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

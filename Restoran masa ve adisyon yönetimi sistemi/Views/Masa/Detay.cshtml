@@ -1,0 +1,94 @@
+﻿@model List<Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Adisyon>
+
+<div class="container mt-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">🧾 Masa @ViewBag.MasaId - Sipariş Detayları</h2>
+        <a href="/Masa/Index" class="btn btn-outline-secondary shadow-sm">⬅ Masalara Dön</a>
+    </div>
+    <hr />
+
+    <div class="row">
+        
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-3 mb-4">
+                <div class="card-header bg-dark text-white py-3" style="border-radius: 10px 10px 0 0;">
+                    <h5 class="mb-0 text-center">Mevcut Siparişler</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover table-borderless text-center align-middle mb-0">
+                        <thead class="table-light border-bottom">
+                            <tr>
+                                <th>Ürün Adı</th>
+                                <th>Adet</th>
+                                <th>Birim Fiyat</th>
+                                <th>Satır Toplamı</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">Bu masada henüz hiç sipariş yok.</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var siparis in Model)
+                                {
+                                    <tr class="border-bottom">
+                                        <td class="fw-bold">@siparis.UrunAdi</td>
+                                        <td><span class="badge bg-secondary fs-6">@siparis.Adet x</span></td>
+                                        <td>@siparis.Fiyat ₺</td>
+                                        <td class="text-success fw-bold">@(siparis.Adet * siparis.Fiyat) ₺</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                
+                @if (Model.Count > 0)
+                {
+                    // Masadaki tüm ürünlerin adet*fiyat çarpımını toplayıp genel hesabı buluyoruz
+                    var genelToplam = Model.Sum(x => x.Adet * x.Fiyat);
+                    
+                    <div class="card-footer bg-light d-flex justify-content-between align-items-center p-3" style="border-radius: 0 0 10px 10px;">
+                        <h4 class="text-success mb-0 fw-bold">Genel Toplam: @genelToplam ₺</h4>
+                        
+                        <form action="/Adisyon/HesapKapat" method="post">
+                            <input type="hidden" name="masaId" value="@ViewBag.MasaId" />
+                            <button type="submit" class="btn btn-danger btn-lg shadow">💳 Hesabı Kapat</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-3 bg-light p-4">
+                <h4 class="text-center text-primary mb-3">🍔 Yeni Ürün Ekle</h4>
+                <form action="/Adisyon/Ekle" method="post">
+                    <input type="hidden" name="MasaId" value="@ViewBag.MasaId" />
+                    
+                    <div class="mb-3">
+                        <label class="fw-bold text-secondary mb-1">Ürün Adı</label>
+                        <input type="text" name="UrunAdi" class="form-control form-control-lg" required placeholder="Örn: Çay" />
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="fw-bold text-secondary mb-1">Adet</label>
+                            <input type="number" name="Adet" class="form-control form-control-lg" value="1" min="1" required />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="fw-bold text-secondary mb-1">Fiyat (₺)</label>
+                            <input type="number" step="0.01" name="Fiyat" class="form-control form-control-lg" required placeholder="15.50" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm mt-2">Masaya Yaz ➔</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>

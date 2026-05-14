@@ -1,0 +1,39 @@
+﻿@model Restoran_masa_ve_adisyon_yönetimi_sistemi.Models.Rezervasyon
+
+@{
+    ViewData["Title"] = "Tarihi Güncelle";
+}
+
+<div class="container mt-5">
+    <div class="card bg-dark text-white p-5 mx-auto shadow-lg" style="max-width: 500px; border-radius: 15px;">
+        
+        <h2 class="text-center fw-bold mb-4 text-primary">📅 Tarihi Güncelle</h2>
+        <p class="text-center text-muted small mb-4">Masa @Model.MasaId rezervasyonunuz için yeni bir tarih seçin.</p>
+        
+        <form action="/Musteri/Guncelle" method="post">
+            
+            @* Hangi rezervasyonu güncellediğimizi gizlice yolluyoruz *@
+            <input type="hidden" name="id" value="@Model.Id" />
+            
+            <div class="mb-4">
+                <label class="form-label text-light">Yeni Tarih ve Saat</label>
+                <input type="datetime-local" id="yeniTarih" name="yeniTarih" class="form-control"
+                       value="@Model.Tarih.ToString("yyyy-MM-ddTHH:mm")"
+                       min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100 fw-bold p-2" style="border-radius: 10px;">
+                Değişiklikleri Kaydet
+            </button>
+            <a href="/Musteri/Rezervasyonlarim" class="btn btn-outline-secondary w-100 mt-2 fw-bold" style="border-radius: 10px;">
+                Vazgeç
+            </a>
+        </form>
+    </div>
+</div>
+
+<style>
+    body {
+        background: #121212;
+    }
+</style>
