@@ -36,16 +36,7 @@ namespace Restoran_masa_ve_adisyon_yönetimi_sistemi.Models
                 new Masa { Id = 5, MasaNo = "Masa 5", DoluMu = false }
             );
 
-            // 3️⃣ KURUCU ADMİN HESABI
-            modelBuilder.Entity<Kullanici>().HasData(
-                new Kullanici
-                {
-                    Id = 1,
-                    KullaniciAdi = "admin",
-                    Sifre = "1234",
-                    Rol = "Admin"
-                }
-            );
+            // ❌ Admin hesabı buradan kaldırıldı! (Hocanın istediği gibi, doğrudan SQL'den eklenecek)
         }
     }
 }
